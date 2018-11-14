@@ -20,7 +20,7 @@ namespace TicTacToe {
                 InputChoice();
             }
             if (HasWin()) {
-                Console.WriteLine("Move accepted, well done Player {0}, you've won the game!", player);
+                Console.WriteLine("Move accepted, well done Player {0}, you've won the game!", 3 - player);
             } else if (HasDraw()) {
                 Console.WriteLine("Move accepted, the game has ended in a draw.");
             } else {
