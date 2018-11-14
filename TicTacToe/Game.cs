@@ -21,7 +21,7 @@ namespace TicTacToe {
             }
             if (HasWin()) {
                 Console.WriteLine("Move accepted, well done Player {0}, you've won the game!", player);
-            } else if (HasDraw()) {
+            } else if (HasDrawn()) {
                 Console.WriteLine("Move accepted, the game has ended in a draw.");
             } else {
                 Console.WriteLine("Player {0} has quit the game. Player {1} wins!", player, 3 - player);
@@ -55,14 +55,14 @@ namespace TicTacToe {
         }
 
         private bool HasFinished() {
-            return HasWin() || HasDraw() || hasQuit;
+            return HasWin() || HasDrawn() || hasQuit;
         }
 
         private bool HasWin() {
             return b.HasDiagonal() || b.HasHorizontal() || b.HasVertical();
         }
 
-        private bool HasDraw() {
+        private bool HasDrawn() {
             return b.IsFull() && !HasWin();
         }
          
