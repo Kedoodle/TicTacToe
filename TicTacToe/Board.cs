@@ -3,21 +3,18 @@ using System;
 namespace TicTacToe {
     
     public class Board {
+
+        private int size;
+        private char[,] slots;
         
-        private char[,] slots = new char[3, 3];
-        
-        public Board() {
-            for (int y = 0; y < 3; y++) {
-                for (int x = 0; x < 3; x++) {
+        public Board(int s) {
+            size = s < 1 ? 1 : s;
+            slots = new char[size, size];
+            for (var y = 0; y < size; y++) {
+                for (var x = 0; x < size; x++) {
                     slots[x, y] = '.';
                 }
             }
-        }
-        
-        public void Display() {
-            Console.WriteLine("{0} {1} {2}", slots[0, 0], slots[1, 0], slots[2, 0]);
-            Console.WriteLine("{0} {1} {2}", slots[0, 1], slots[1, 1], slots[2, 1]);
-            Console.WriteLine("{0} {1} {2}\n", slots[0, 2], slots[1, 2], slots[2, 2]);
         }
 
         public char Get(int x, int y) {
@@ -28,10 +25,24 @@ namespace TicTacToe {
             slots[x - 1, y - 1] = c;
         }
 
+        public int Size() {
+            return size;
+        }
+        
+        public void Display() {
+            for (var y = 0; y < size; y++) {
+                for (var x = 0; x < size; x++) {
+                    Console.Write(slots[x, y] + " ");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+        }
+
         public bool IsFull() {
-            for (int y = 0; y < 3; y++) {
-                for (int x = 0; x < 3; x++) {
-                    if (slots[x, y] == '.')
+            for (var y = 0; y < size; y++) {
+                for (var x = 0; x < size; x++) {
+                    if (slots[x, y].Equals('.'))
                         return false;
                 }
             }
@@ -39,22 +50,53 @@ namespace TicTacToe {
         }
 
         public bool HasDiagonal() {
-            return slots[0, 0] == slots[1, 1] && slots[1, 1] == slots[2, 2] && slots[1, 1] != '.'
-                || slots[2, 0] == slots[1, 1] && slots[1, 1] == slots[2, 2] && slots[1, 1] != '.';
+            return HasForwardDiagonal() || HasBackwardDiagonal();
+        }
+
+        private bool HasForwardDiagonal() {
+            if (slots[0, 0].Equals('.'))
+                return false;
+            for (var i = 0; i < size; i++) {
+                if (!slots[i, i].Equals(slots[0, 0]))
+                    return false;
+            }
+            return true;
+        }
+        
+        private bool HasBackwardDiagonal() {
+            if (slots[size - 1, 0].Equals('.'))
+                return false;
+            for (var i = 0; i < size; i++) {
+                if (!slots[size - 1 - i, i].Equals(slots[size - 1, 0]))
+                    return false;
+            }
+            return true;
         }
 
 
         public bool HasHorizontal() {
-            return slots[0, 0] == slots[1, 0] && slots[1, 0] == slots[2, 0] && slots[1, 0] != '.'
-                || slots[0, 1] == slots[1, 1] && slots[1, 1] == slots[2, 1] && slots[1, 1] != '.'
-                || slots[0, 2] == slots[1, 2] && slots[1, 2] == slots[2, 2] && slots[1, 2] != '.';
+            for (var y = 0; y < size; y++) {
+                if (!slots[0, y].Equals('.')) {
+                    for (var x = 0; x < size; x++) {
+                        if (!slots[x, y].Equals(slots[0, y]))
+                            return false;
+                    }
+                }
+            }
+            return true;
         }
 
 
         public bool HasVertical() {
-            return slots[0, 0] == slots[0, 1] && slots[0, 1] == slots[0, 2] && slots[0, 1] != '.' 
-                || slots[1, 0] == slots[1, 1] && slots[1, 1] == slots[1, 2] && slots[1, 1] != '.' 
-                || slots[2, 0] == slots[2, 1] && slots[2, 1] == slots[2, 2] && slots[2, 1] != '.';
+            for (var x = 0; x < size; x++) {
+                if (slots[x, 0].Equals('.'))
+                    return false;
+                for (var y = 0; y < size; y++) {
+                    if (!slots[x, y].Equals(slots[x, 0]))
+                        return false;
+                }
+            }
+            return true;
         }
     }
 }

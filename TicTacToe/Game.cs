@@ -39,8 +39,8 @@ namespace TicTacToe {
             } else if (s.Length != 3 || s[1] != ','
                                      || !int.TryParse(s[0].ToString(), out var x)
                                      || !int.TryParse(s[2].ToString(), out var y)
-                                     || x < 1 || x > 3
-                                     || y < 1 || y > 3) {
+                                     || x < 1 || x > b.Size()
+                                     || y < 1 || y > b.Size()) {
                 Console.WriteLine("Invalid input");
                 InputChoice();
             }
