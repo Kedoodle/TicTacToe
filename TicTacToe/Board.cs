@@ -76,25 +76,36 @@ namespace TicTacToe {
 
         public bool HasHorizontal() {
             for (var y = 0; y < size; y++) {
-                if (!slots[0, y].Equals('.')) {
-                    for (var x = 0; x < size; x++) {
-                        if (!slots[x, y].Equals(slots[0, y]))
-                            return false;
-                    }
-                }
+                if (CheckRow(y))
+                    return true;
+            }
+            return false;
+        }
+
+        private bool CheckRow(int y) {
+            if (slots[0, y].Equals('.'))
+                return false;
+            for (var x = 0; x < size; x++) {
+                if (!slots[x, y].Equals(slots[0, y]))
+                    return false;
             }
             return true;
         }
 
-
         public bool HasVertical() {
             for (var x = 0; x < size; x++) {
-                if (slots[x, 0].Equals('.'))
+                if (CheckColumn(x))
+                    return true;
+            }
+            return false;
+        }
+
+        private bool CheckColumn(int x) {
+            if (slots[x, 0].Equals('.'))
+                return false;
+            for (var y = 0; y < size; y++) {
+                if (!slots[x, y].Equals(slots[x, 0]))
                     return false;
-                for (var y = 0; y < size; y++) {
-                    if (!slots[x, y].Equals(slots[x, 0]))
-                        return false;
-                }
             }
             return true;
         }
