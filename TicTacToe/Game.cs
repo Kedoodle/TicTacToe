@@ -48,10 +48,14 @@ namespace TicTacToe {
                     b.Set(x, y, player == 1 ? 'X' : 'O');
                     Console.WriteLine("Move accepted, here's the current board:\n");
                     b.Display();
-                    player = 3 - player; // Switches player between 1 and 2
+                    SwitchPlayer();
             } else {
                 Console.WriteLine("Oh no, a piece is already at this place! Try again...\n");
             }
+        }
+
+        private void SwitchPlayer() {
+            player = 3 - player;
         }
 
         private bool HasFinished() {
