@@ -4,51 +4,87 @@ namespace TicTacToe {
     
     public class Game {
 
-        private Board b;
-        private int player = 1;
+        private Board board;
+        private bool isPlayerTurn = true;
         private bool hasQuit;
         
         public Game(Board b) {
-            this.b = b;
+            board = b;
         }
 
         public void Start() {
             Console.WriteLine("Welcome to Tic Tac Toe!\n");
             Console.WriteLine("Here's the current board:\n");
-            b.Display();
+            board.Display();
             while (!HasFinished()) {
-                InputChoice();
+                NextTurn();
             }
-            if (HasWin()) {
-                Console.WriteLine("Move accepted, well done Player {0}, you've won the game!", 3 - player);
-            } else if (HasDraw()) {
-                Console.WriteLine("Move accepted, the game has ended in a draw.");
-            } else {
-                Console.WriteLine("Player {0} has quit the game. Player {1} wins!", player, 3 - player);
+            if (hasQuit) {
+                Console.WriteLine("You have quit the game. AI wins!");
+            }
+            else if (HasDraw()) {
+                Console.WriteLine("The game has ended in a draw");
+            }
+            else {
+                Console.WriteLine("{0} won the game!", isPlayerTurn ? "AI" : "You");
+            }
+         }
+
+        private void NextTurn() {
+            if (isPlayerTurn) {
+                PlayerMove();
+            }
+            else {
+                AIMove();
             }
         }
 
-        private void InputChoice() {
-            Console.Write("Player {0} enter a coord x,y to place your {1} or enter 'q' to give up: ", player, player == 1? "X" : "O");
-            ProcessInput(Console.ReadLine());
+        private void AIMove() {
+            var availableSlots = board.GetAvailableSlots();
+            ProcessMove(availableSlots[0].Item1, availableSlots[0].Item2);
         }
-
-        private void ProcessInput(string s) {
-            if (s == "q") {
+        
+        private void PlayerMove() {
+            var input = GetInput();
+            if (input == "q")
                 hasQuit = true;
-            } else if (s.Length != 3 || s[1] != ','
-                                     || !int.TryParse(s[0].ToString(), out var x)
-                                     || !int.TryParse(s[2].ToString(), out var y)
-                                     || x < 1 || x > 3
-                                     || y < 1 || y > 3) {
-                Console.WriteLine("Invalid input");
-                InputChoice();
+            else {
+                ProcessInput(input);
             }
-            else if (b.Get(x, y) == '.') {
-                    b.Set(x, y, player == 1 ? 'X' : 'O');
-                    Console.WriteLine("Move accepted, here's the current board:\n");
-                    b.Display();
-                    player = 3 - player; // Switches player between 1 and 2
+        }
+
+        private static string GetInput() {
+            Console.Write("Please enter a coord x,y to place your X or enter 'q' to give up: ");
+            var input = Console.ReadLine();
+            while (!IsValidInput(input)) {
+                Console.Write("Invalid input! Please try again: ");
+                input = Console.ReadLine();
+            }
+            return input;
+        }
+
+        private static bool IsValidInput(string input) {
+            if (input == "q")
+                return true;
+            return input.Length == 3 && input[1] == ','
+                                     && int.TryParse(input[0].ToString(), out var x)
+                                     && int.TryParse(input[2].ToString(), out var y)
+                                     && x > 0 && x < 4
+                                     && y > 0 && y < 4;
+        }
+
+        private void ProcessInput(string input) {
+            var x = int.Parse(input[0].ToString());
+            var y = int.Parse(input[2].ToString());
+            ProcessMove(x, y);
+        }
+
+        private void ProcessMove(int x, int y) {
+            if (board.GetSlot(x, y) == '.') {
+                board.SetSlot(x, y, isPlayerTurn ? 'X' : 'O');
+                Console.WriteLine("{0} move accepted, here's the current board:\n", isPlayerTurn ? "Player" : "AI");
+                board.Display();
+                isPlayerTurn = !isPlayerTurn;
             } else {
                 Console.WriteLine("Oh no, a piece is already at this place! Try again...\n");
             }
@@ -59,11 +95,11 @@ namespace TicTacToe {
         }
 
         private bool HasWin() {
-            return b.HasDiagonal() || b.HasHorizontal() || b.HasVertical();
+            return board.HasDiagonal() || board.HasHorizontal() || board.HasVertical();
         }
 
         private bool HasDraw() {
-            return b.IsFull() && !HasWin();
+            return board.IsFull() && !HasWin();
         }
          
     }

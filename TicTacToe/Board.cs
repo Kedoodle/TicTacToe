@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace TicTacToe {
     
@@ -7,8 +8,8 @@ namespace TicTacToe {
         private char[,] slots = new char[3, 3];
         
         public Board() {
-            for (int y = 0; y < 3; y++) {
-                for (int x = 0; x < 3; x++) {
+            for (var y = 0; y < 3; y++) {
+                for (var x = 0; x < 3; x++) {
                     slots[x, y] = '.';
                 }
             }
@@ -19,18 +20,29 @@ namespace TicTacToe {
             Console.WriteLine("{0} {1} {2}", slots[0, 1], slots[1, 1], slots[2, 1]);
             Console.WriteLine("{0} {1} {2}\n", slots[0, 2], slots[1, 2], slots[2, 2]);
         }
+        
+        public List<Tuple<int, int>> GetAvailableSlots() {
+            var availableSlots = new List<Tuple<int, int>>();
+            for (var y = 0; y < 3; y++) {
+                for (var x = 0; x < 3; x++) {
+                    if (slots[x, y] == '.')
+                        availableSlots.Add(new Tuple<int, int>(x + 1, y + 1));
+                }
+            }
+            return availableSlots;
+        }
 
-        public char Get(int x, int y) {
+        public char GetSlot(int x, int y) {
             return slots[x - 1, y - 1];
         }
 
-        public void Set(int x, int y, char c) {
+        public void SetSlot(int x, int y, char c) {
             slots[x - 1, y - 1] = c;
         }
 
         public bool IsFull() {
-            for (int y = 0; y < 3; y++) {
-                for (int x = 0; x < 3; x++) {
+            for (var y = 0; y < 3; y++) {
+                for (var x = 0; x < 3; x++) {
                     if (slots[x, y] == '.')
                         return false;
                 }
