@@ -52,7 +52,7 @@ namespace TicTacToe {
 
         public bool HasDiagonal() {
             return slots[0, 0] == slots[1, 1] && slots[1, 1] == slots[2, 2] && slots[1, 1] != '.'
-                || slots[2, 0] == slots[1, 1] && slots[1, 1] == slots[2, 2] && slots[1, 1] != '.';
+                || slots[2, 0] == slots[1, 1] && slots[1, 1] == slots[0, 2] && slots[1, 1] != '.';
         }
 
 

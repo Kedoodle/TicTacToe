@@ -40,9 +40,58 @@ namespace TicTacToe {
         }
 
         private void AIMove() {
+            var bestVal = -10;
+            var move = new Tuple<int, int>(-1, -1);
             var availableSlots = board.GetAvailableSlots();
-            ProcessMove(availableSlots[0].Item1, availableSlots[0].Item2);
+            foreach (var slot in availableSlots)
+            {
+                board.SetSlot(slot.Item1, slot.Item2, 'O');
+                var moveVal = MiniMax(false);
+                board.SetSlot(slot.Item1, slot.Item2, '.');
+                if (moveVal > bestVal) {
+                    bestVal = moveVal;
+                    move = slot;
+                }
+            }
+            ProcessMove(move.Item1, move.Item2);
+            
         }
+
+        private int MiniMax(bool isAI) {
+            
+            if (HasWin()) {
+                return isAI ? -10 : 10;
+            }
+            if (HasDraw()) {
+                return 0;
+            }
+
+            int score;
+            var availableSlots = board.GetAvailableSlots();
+            
+            if (isAI) {
+                score = -100;
+                foreach (var slot in availableSlots)
+                {
+                    board.SetSlot(slot.Item1, slot.Item2, 'O');
+                    score = Math.Max(score, MiniMax(!isAI));
+                    board.SetSlot(slot.Item1, slot.Item2, '.');
+                }
+            }
+            else {
+                score = 100;
+                foreach (var slot in availableSlots)
+                {
+                    board.SetSlot(slot.Item1, slot.Item2, 'X');
+                    score = Math.Min(score, MiniMax(!isAI));
+                    board.SetSlot(slot.Item1, slot.Item2, '.');
+                }
+            }
+
+            return score;
+
+        }
+        
         
         private void PlayerMove() {
             var input = GetInput();
